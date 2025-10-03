@@ -12,7 +12,6 @@ def create_access_token(data: dict):
 
 def verify_token(token: str):
     try:
-        token = token.split(" ")[1]
         payload = jwt.decode(token,config.SECRET_KEY, algorithms=config.ALGORITHM)
         if not payload:
             raise HTTPException(status_code=401, detail="Invalid token")

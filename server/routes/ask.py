@@ -11,5 +11,9 @@ async def ask(query: str, request: Request):
     if agent is None:
         return {"error": "Agent not initialized yet. Try again in a moment."}
 
-    response = await agent.ainvoke({"messages": [{"content": query}]})
+    response = await agent.ainvoke(
+    {"messages": [{"role": "user" ,"content": query}]},
+    config={"configurable": {"thread_id": request.state.user['username']}} 
+)
+
     return {"response": response["messages"][-1].content}
