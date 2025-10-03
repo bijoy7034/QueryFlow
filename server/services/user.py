@@ -9,7 +9,9 @@ async def register_service(user):
             return {"error": "Username already exists."}
         user.password = hash_password(user.password)
         await user_collection.insert_one(user.dict())
-        return {"message": "User registered successfully."}
+        return {"message": "User registered successfully.", "user": {
+                    "username": user.username, "email": user.email
+        }}
     except Exception as e:
         return {"error": f"Error: {str(e)}"}
     
@@ -25,6 +27,8 @@ async def login_user(user):
             "username": existing_user['username'],
             "is_admin": existing_user.get('is_admin')
         })
-        return {"access_token": access_token, "token_type": "bearer"}
+        return {"access_token": access_token, "token_type": "bearer", "user": {
+            "username": existing_user['username'], "email": existing_user['email'], "is_admin": existing_user.get('is_admin')
+        }}
     except Exception as e:
         return {"error": f"Error: {str(e)}"}
