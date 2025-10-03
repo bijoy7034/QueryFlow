@@ -1,0 +1,68 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.py.class
+
+# Virtual environment
+.env
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+
+# Environment variables
+*.env
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Testing / Coverage
+.coverage
+htmlcov/
+.tox/
+pytest_cache/
+.pytest_cache/
+.cache/
+
+# Mypy / Type checker
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# FastAPI / Uvicorn logs
+*.log
+
+# Build / Packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Docker
+docker-compose.override.yml
+*.pid
+
+# Database files (if using SQLite locally)
+*.db
+*.sqlite3
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Jupyter / notebooks
+.ipynb_checkpoints
+
+
+venv
