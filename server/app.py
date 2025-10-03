@@ -31,7 +31,6 @@ server_parameters = StdioServerParameters(
 memory = MemorySaver()
 
 async def mcp_background_task(app: FastAPI):
-    """Initialize MCP agent and keep session alive."""
     async with stdio_client(server_parameters) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()
