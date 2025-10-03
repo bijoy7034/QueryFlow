@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from middleware.auth_middleware import AuthMiddleware
 from routes.user import router as user_router
 from routes.ask import router as ask_router
+from utils.prompts import system_prompt
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from mcp import StdioServerParameters, ClientSession
@@ -39,12 +40,7 @@ async def mcp_background_task(app: FastAPI):
             app.state.agent = create_react_agent(
                 model,
                 tools,
-                prompt=(
-                    "You are a MongoDB assistant. "
-                    "Your job is to use the tools from the MCP server to interact with MongoDB safely and effectively. "
-                    "Use tools to fetch schema info, update documents, disable jobs via config collections, and more. "
-                    "Never guess. Use the tools provided for every action or question about data."
-                ),
+                prompt=system_prompt(),
                 checkpointer=memory,
             )
             print("MCP agent initialized.")
