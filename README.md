@@ -1,4 +1,3 @@
-# QueryFlow
 QueryFlow — Natural Language to SQL for Relational Databases
 ==========================================================
 
