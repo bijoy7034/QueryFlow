@@ -1,7 +1,7 @@
 QueryFlow — Natural Language to SQL for Relational Databases
 ==========================================================
 
-NLQuery is an intelligent Natural Language Processing (NLP) layer that enables seamless communication and interaction with relational databases. It converts unstructured natural language prompts into safe, explainable SQL queries and provides results in human-friendly formats. QueryFlow pairs NLQuery with connection management, prompt templates, result validation, and optional execution safeguards so teams can integrate conversational data access into apps and tooling.
+QueryFlow is an intelligent Natural Language Processing (NLP) layer that enables seamless communication and interaction with relational databases. It converts unstructured natural language prompts into safe, explainable SQL queries and provides results in human-friendly formats. QueryFlow pairs NLQuery with connection management, prompt templates, result validation, and optional execution safeguards so teams can integrate conversational data access into apps and tooling.
 
 Key features
 - Translate plain English (and other supported languages) into SQL for popular RDBMS (Postgres, MySQL, SQLite, etc.).
@@ -19,7 +19,7 @@ Quick start
     - Provide a DB connection string (environment variable or config file).
     - Optionally register allowed tables/columns and read-only mode for safety.
 
-3. Use NLQuery
+3. Use 
     - Initialize the NLQuery client with your datasource and optional model settings.
     - Send a plain language prompt and receive an interpretable SQL query and structured results.
 
