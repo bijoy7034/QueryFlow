@@ -1,5 +1,5 @@
 # QueryFlow
-NLQuery — Natural Language to SQL for Relational Databases
+QueryFlow — Natural Language to SQL for Relational Databases
 ==========================================================
 
 NLQuery is an intelligent Natural Language Processing (NLP) layer that enables seamless communication and interaction with relational databases. It converts unstructured natural language prompts into safe, explainable SQL queries and provides results in human-friendly formats. QueryFlow pairs NLQuery with connection management, prompt templates, result validation, and optional execution safeguards so teams can integrate conversational data access into apps and tooling.
