@@ -26,7 +26,7 @@ model = ChatGoogleGenerativeAI(
 
 server_parameters = StdioServerParameters(
     command=sys.executable,
-    args=["mcp-server.py"],
+    args=["mcp-mongo-server.py"],
 )
 
 memory = MemorySaver()
@@ -46,7 +46,7 @@ async def mcp_background_task(app: FastAPI):
             print("MCP agent initialized.")
 
             while True:
-                await asyncio.sleep(3600)
+                await asyncio.sleep(3000)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
