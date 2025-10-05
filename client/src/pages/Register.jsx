@@ -1,4 +1,5 @@
 import { Package } from "lucide-react";
+import { useState } from "react";
 
 const RegisterPage = ({ onRegister, onSwitchToLogin }) => {
   const [name, setName] = useState('');

@@ -1,5 +1,6 @@
-import { Package } from "lucide-react";
+import { Clock, FileText, MessageSquare, Package, Shield } from "lucide-react";
 import FeatureItem from "../FeatureItem/FeatureItem";
+import { Activity } from "react";
 
 const FeaturesSidebar = () => {
   const features = [

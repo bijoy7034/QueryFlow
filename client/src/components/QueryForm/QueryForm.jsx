@@ -1,4 +1,5 @@
 import { Send } from "lucide-react";
+import { useState } from "react";
 
 const QueryForm = ({ onSubmit }) => {
   const [query, setQuery] = useState('');

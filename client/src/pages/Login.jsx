@@ -1,3 +1,6 @@
+import { Package } from "lucide-react";
+import { useState } from "react";
+
 const LoginPage = ({ onLogin, onSwitchToRegister }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

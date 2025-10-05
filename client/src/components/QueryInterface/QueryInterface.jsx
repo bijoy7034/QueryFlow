@@ -1,6 +1,7 @@
 import { Clock } from "lucide-react";
 import QueryForm from "../QueryForm/QueryForm";
 import ResultsDisplay from "../ResultDisplay/ResultDisplay";
+import { useState } from "react";
 
 const QueryInterface = () => {
   const [activeTab, setActiveTab] = useState('query');

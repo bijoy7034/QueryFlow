@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import { Camera, Package, Lock, Activity, FileText, Clock, MessageSquare, Shield, Send, Database } from 'lucide-react';
-import LoginPage from './components/Login/Login';
 import Dashboard from './pages/Dashboard';
-
-
+import LoginPage from './pages/Login';
+import RegisterPage from './pages/Register';
 
 export default function App() {
   const [page, setPage] = useState('login');
