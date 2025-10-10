@@ -1,19 +1,24 @@
-import { Package } from "lucide-react";
+import { AlertCircle, Package } from "lucide-react";
 import { useState } from "react";
+import usePageStore from "../store/page";
+import useAuthStore from "../store/auth";
 
-const RegisterPage = ({ onRegister, onSwitchToLogin }) => {
-  const [name, setName] = useState('');
+const RegisterPage = () => {
+  const [username, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const {setPage} = usePageStore()
+  const {register, loading, error} = useAuthStore()
 
   const handleRegister = () => {
     if (password !== confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
-    if (name && email && password) {
-      onRegister({ name, email, password });
+    if (username && email && password) {
+      register({ username, email, password });
     }
   };
 
@@ -30,14 +35,25 @@ const RegisterPage = ({ onRegister, onSwitchToLogin }) => {
 
         <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-8">
           <div>
+            {error && (
+              <div className="mb-5 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-start gap-3 animate-in slide-in-from-top">
+                <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-sm text-red-300 font-medium">Login Failed</p>
+                  <p className="text-xs text-red-400/80 mt-1">
+                    {typeof error === 'string' ? error : 'Invalid credentials. Please try again.'}
+                  </p>
+                </div>
+              </div>
+            )}
             <div className="mb-5">
-              <label className="block text-sm font-medium mb-2">Full Name</label>
+              <label className="block text-sm font-medium mb-2">Username</label>
               <input
                 type="text"
-                value={name}
+                value={username}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-blue-500 transition-all"
-                placeholder="John Doe"
+                placeholder="Johndoe@74"
               />
             </div>
 
@@ -85,7 +101,7 @@ const RegisterPage = ({ onRegister, onSwitchToLogin }) => {
           <div className="mt-6 text-center text-sm">
             <span className="text-white/70">Already have an account? </span>
             <button
-              onClick={onSwitchToLogin}
+              onClick={()=>{ setPage('login')}}
               className="text-blue-400 hover:text-blue-300 font-medium"
             >
               Sign in
