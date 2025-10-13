@@ -1,4 +1,6 @@
+import usePageStore from "../store/page";
 import API from "../utils/api";
+
 
 export const register_request = async (set, userData) => {
     try {
@@ -6,7 +8,17 @@ export const register_request = async (set, userData) => {
             loading: true,
             error: null
         });
-        const response = await API.post("/auth/register", userData);
+        const response = await API.post("/user/register", userData);
+        if (response.data.error) {
+            set({
+                error: response.data.error,
+                loading: false,
+            });
+            return {
+                success: false,
+                message: response.data.error
+            };
+        }
         set({
             loading: false,
             user: response.data.user
@@ -33,7 +45,17 @@ export const login_request = async (set, credentials) => {
             loading: true,
             error: null
         });
-        const res = await API.post("/auth/login", credentials);
+        const res = await API.post("/user/login", credentials);
+        if (res.data.error) {
+            set({
+                error: res.data.error,
+                loading: false,
+            });
+            return {
+                success: false,
+                message: res.data.error
+            };
+        }
         if (res) {
             set({
                 loading: false,
@@ -41,6 +63,8 @@ export const login_request = async (set, credentials) => {
                 token: res.data.access_token,
                 is_logged_in: true
             });
+            const {setPage} = usePageStore.getState()
+            setPage('dashboard')
         }
         return {
             success: true,

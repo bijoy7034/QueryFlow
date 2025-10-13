@@ -10,6 +10,8 @@ const useAuthStore = create((set)=>({
     register: (userData)=> register_request(set, userData),
     login: (credential) => login_request(set, credential),
     logout: ()=> set({ user: null, token: null, is_logged_in: false }),
+
+    clearError: ()=> set({error: null})
 }))
 
 export default useAuthStore
