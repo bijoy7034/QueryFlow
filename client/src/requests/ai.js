@@ -1,4 +1,3 @@
-// requests/ai.js
 import API from "../utils/api";
 import useAuthStore from "../store/auth";
 
@@ -6,7 +5,6 @@ export const ask_request = async (set, query) => {
   try {
     set({ loading: true, error: null, currentQuery: query });
 
-    // Get token from auth store
     const token = useAuthStore.getState().token;
     
     if (!token) {
@@ -43,7 +41,6 @@ export const ask_request = async (set, query) => {
     let aiResponse = response.data.response;
     const isMarkdown = response.data.format === "markdown";
     
-    // Ensure it's a string
     if (typeof aiResponse !== 'string') {
       if (typeof aiResponse === 'object' && aiResponse !== null) {
         if (aiResponse.text) {
@@ -89,7 +86,6 @@ export const ask_request = async (set, query) => {
     
     if (error.response?.status === 401) {
       errorMessage = "Session expired. Please login again.";
-      // Logout user on 401
       const { logout } = useAuthStore.getState();
       logout();
     } else if (error.response?.status === 503) {
