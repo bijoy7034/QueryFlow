@@ -1,12 +1,31 @@
 // requests/ai.js
 import API from "../utils/api";
+import useAuthStore from "../store/auth";
 
 export const ask_request = async (set, query) => {
   try {
     set({ loading: true, error: null, currentQuery: query });
 
+    // Get token from auth store
+    const token = useAuthStore.getState().token;
+    
+    if (!token) {
+      set({
+        error: "Authentication required. Please login.",
+        loading: false,
+        currentResponse: null,
+      });
+      return {
+        success: false,
+        message: "Authentication required"
+      };
+    }
+
     const response = await API.post("/ai/ask", null, {
-      params: { query }
+      params: { query },
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
 
     if (response.data.error) {
@@ -26,7 +45,23 @@ export const ask_request = async (set, query) => {
     
     // Ensure it's a string
     if (typeof aiResponse !== 'string') {
-      aiResponse = JSON.stringify(aiResponse, null, 2);
+      if (typeof aiResponse === 'object' && aiResponse !== null) {
+        if (aiResponse.text) {
+          aiResponse = aiResponse.text;
+        } else if (Array.isArray(aiResponse)) {
+          aiResponse = aiResponse
+            .map(item => {
+              if (typeof item === 'string') return item;
+              if (item.text) return item.text;
+              return JSON.stringify(item);
+            })
+            .join('\n');
+        } else {
+          aiResponse = JSON.stringify(aiResponse, null, 2);
+        }
+      } else {
+        aiResponse = String(aiResponse);
+      }
     }
 
     set((state) => ({
@@ -52,7 +87,14 @@ export const ask_request = async (set, query) => {
   } catch (error) {
     let errorMessage = "Failed to process query";
     
-    if (error.response?.data?.detail) {
+    if (error.response?.status === 401) {
+      errorMessage = "Session expired. Please login again.";
+      // Logout user on 401
+      const { logout } = useAuthStore.getState();
+      logout();
+    } else if (error.response?.status === 503) {
+      errorMessage = "Service temporarily unavailable. Agent is initializing...";
+    } else if (error.response?.data?.detail) {
       errorMessage = error.response.data.detail;
     } else if (error.message) {
       errorMessage = error.message;

@@ -10,6 +10,7 @@ from routes.ask import router as ask_router
 from utils.prompts import system_prompt
 
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from mcp import StdioServerParameters, ClientSession
 from langgraph.prebuilt import create_react_agent
 from langgraph.checkpoint.memory import MemorySaver
@@ -22,6 +23,12 @@ model = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
     google_api_key=os.getenv("GEMINI_API_KEY"),
     temperature=0.2,
+)
+
+fall_back_model = ChatGroq(
+    model_name="llama-3.3-70b-versatile",
+    temperature=0.7,
+    api_key=os.getenv("GROQ_API_KEY"),
 )
 
 server_parameters = StdioServerParameters(

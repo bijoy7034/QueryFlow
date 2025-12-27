@@ -109,9 +109,28 @@ def insert_document(collection_name: str, document: dict) -> str:
     except Exception as e:
         return f"Error inserting document: {str(e)}"
 
+@mcp.tool
+def run_query(query: str) -> str:
+    """Run a MongoDB query and return the results as a string."""
+    try:
+        exec_globals = {'db': db}
+        exec_locals = {}
+        exec(f"result = {query}", exec_globals, exec_locals)
+        result = exec_locals['result']
+        
+        if isinstance(result, list):
+            return str(result)
+        elif hasattr(result, 'inserted_id'):
+            return f"Inserted document with ID: {result.inserted_id}"
+        elif hasattr(result, 'modified_count'):
+            return f"Modified {result.modified_count} documents."
+        else:
+            return str(result)
+    except Exception as e:
+        return f"Error executing query: {str(e)}"
 
 @mcp.tool
-def view_collection(collection_name: str ):
+def view_collection(collection_name: str,  ):
     """
     View all documents in a specified collection in the MongoDB database.
     """

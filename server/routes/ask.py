@@ -8,12 +8,8 @@ router = APIRouter(
 
 def format_response_as_markdown(content: str, query: str) -> str:
     """Format the AI response as a well-structured markdown document"""
-    
-    markdown = f"""# Query Response
-
+    markdown = f"""
         {content}
-
-        *Generated on: {__import__('datetime').datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*
         """
     return markdown
 
@@ -56,6 +52,7 @@ async def ask(query: str, request: Request):
 
         content = str(content)
         
+
         markdown_response = format_response_as_markdown(content, query)
         
         return {

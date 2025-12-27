@@ -1,104 +1,131 @@
-import { Database, FileText, MessageSquare } from "lucide-react";
+import { useCallback } from "react";
+import {
+  Database,
+  FileText,
+  AlertCircle,
+  Download,
+} from "lucide-react";
 
-const ResultsDisplay = ({ query, loading }) => {
+import useAIStore from "../../store/ai";
+import MarkdownDisplay from "../MarkdownDisplay/MarkdownDisplay";
+
+const ResultsDisplay = () => {
+  const {
+    currentQuery,
+    currentResponse,
+    isMarkdown,
+    loading,
+    error,
+  } = useAIStore();
+
+  /**
+   * Safely normalize response to string
+   */
+  const normalizeResponse = useCallback((response) => {
+    if (typeof response === "string") return response;
+
+    if (response && typeof response === "object") {
+      return JSON.stringify(response, null, 2);
+    }
+
+    return String(response ?? "");
+  }, []);
+
+  /**
+   * Download markdown response
+   */
+  const downloadMarkdown = () => {
+    const content = normalizeResponse(currentResponse);
+
+    const blob = new Blob([content], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `query-response-${Date.now()}.md`;
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  /**
+   * Loading state
+   */
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-16">
         <div className="w-12 h-12 border-4 border-white/10 border-t-blue-500 rounded-full animate-spin" />
-        <p className="mt-5 text-white/70">Processing your query...</p>
+        <p className="mt-5 text-white/70">
+          Processing your query...
+        </p>
       </div>
     );
   }
 
-  if (!query) {
+  /**
+   * Error state
+   */
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16">
+        <AlertCircle className="w-16 h-16 text-red-400 mb-5" />
+        <p className="text-red-400 text-center max-w-md">
+          {error}
+        </p>
+      </div>
+    );
+  }
+
+  /**
+   * Empty state
+   */
+  if (!currentQuery || currentResponse == null) {
     return (
       <div className="text-center py-16 text-white/50">
         <FileText className="w-16 h-16 mx-auto mb-5" />
-        <p>No results yet. Submit a query to see results here.</p>
+        <p>
+          No results yet. Submit a query to see results here.
+        </p>
       </div>
     );
   }
 
   return (
     <div className="animate-fadeIn">
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-base flex items-center gap-2">
-            <MessageSquare className="w-4 h-4" />
-            Your Query
-          </h3>
-        </div>
-        <div className="bg-black/30 p-5 rounded-lg border border-white/10 overflow-x-auto">
-          <code className="text-cyan-300 text-sm">{query}</code>
-        </div>
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+          <Database className="w-5 h-5" />
+          Query Results
+        </h3>
+
+        {isMarkdown && (
+          <button
+            onClick={downloadMarkdown}
+            className="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg
+                       hover:bg-blue-500/30 transition-all
+                       flex items-center gap-2 text-sm"
+          >
+            <Download className="w-4 h-4" />
+            Download MD
+          </button>
+        )}
       </div>
 
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-base flex items-center gap-2">
-            <Database className="w-4 h-4" />
-            Generated SQL
-          </h3>
-          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-500/20 text-green-400">
-            ✓ Validated
-          </span>
-        </div>
-        <div className="bg-black/30 p-5 rounded-lg border border-white/10 overflow-x-auto">
-          <code className="text-cyan-300 text-sm whitespace-pre">
-            {`SELECT users.name, COUNT(orders.id) as order_count
-                FROM users
-                LEFT JOIN orders ON users.id = orders.user_id
-                WHERE orders.created_at >= '2024-01-01'
-                GROUP BY users.name
-                ORDER BY order_count DESC
-                LIMIT 10;`
-            }
-          </code>
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-base flex items-center gap-2">
-            <FileText className="w-4 h-4" />
-            Query Results
-          </h3>
-          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400">
-            4 rows • 127ms
-          </span>
-        </div>
-        <div className="bg-black/20 rounded-lg overflow-hidden">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-blue-500/20">
-                <th className="px-3 py-3 text-left text-sm font-semibold">
-                  Name
-                </th>
-                <th className="px-3 py-3 text-left text-sm font-semibold">
-                  Order Count
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                { name: "Alice Johnson", count: 47 },
-                { name: "Bob Smith", count: 42 },
-                { name: "Carol Davis", count: 38 },
-                { name: "David Brown", count: 35 },
-              ].map((row, idx) => (
-                <tr
-                  key={idx}
-                  className="border-t border-white/10 hover:bg-white/5"
-                >
-                  <td className="px-3 py-3 text-sm">{row.name}</td>
-                  <td className="px-3 py-3 text-sm">{row.count}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {/* Response */}
+      <div className="bg-black/30 p-6 rounded-lg border border-white/10 overflow-x-auto">
+        {isMarkdown ? (
+          <MarkdownDisplay content={normalizeResponse(currentResponse)} />
+        ) : (
+          <pre className="text-white text-sm whitespace-pre-wrap">
+            {normalizeResponse(currentResponse)}
+          </pre>
+        )}
       </div>
     </div>
   );
 };
+
 export default ResultsDisplay;
