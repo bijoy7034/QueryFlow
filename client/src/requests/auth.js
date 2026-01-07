@@ -3,42 +3,36 @@ import API from "../utils/api";
 
 
 export const register_request = async (set, userData) => {
-    try {
-        set({
-            loading: true,
-            error: null
-        });
-        const response = await API.post("/user/register", userData);
-        if (response.data.error) {
-            set({
-                error: response.data.error,
-                loading: false,
-            });
-            return {
-                success: false,
-                message: response.data.error
-            };
-        }
-        set({
-            loading: false,
-            user: response.data.user
-        });
-        return {
-            success: true,
-            message: "Registration successful",
-            data: response.data
-        };
-    } catch (error) {
-        set({
-            loading: false,
-            error: error.response ? error.response.data.message : error.message
-        });
-        return {
-            success: false,
-            message: "Registration failed"
-        };
+  try {
+    set({ loading: true, error: null });
+
+    const response = await API.post("/user/register", userData);
+
+    if (response.data.error) {
+      set({
+        error: response.data.error,
+        loading: false,
+      });
+      return { success: false, message: response.data.error };
     }
-}
+
+    set({ loading: false });
+
+    return {
+      success: true,
+      message: "Registration successful",
+      data: response.data,
+    };
+  } catch (error) {
+    set({
+      loading: false,
+      error: error.response?.data?.message || error.message,
+    });
+
+    return { success: false, message: "Registration failed" };
+  }
+};
+
 export const login_request = async (set, credentials) => {
     try {
         set({
